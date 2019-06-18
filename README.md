@@ -74,6 +74,8 @@ The setState method will do a simple diff between the old value and the newly gi
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
+`setState( path, newValue )`
+
 ### getState
 
 In the previous example we already see that you can get a propery from the initial state by calling `getState` on the store instance. The getState allows for easy access to deeper nested properties like so:
@@ -81,6 +83,8 @@ In the previous example we already see that you can get a propery from the initi
 ```
 CarStore.getState('sales.ford');
 ```
+
+`getState( path )` 
 
 ### subscribe
 
@@ -92,6 +96,8 @@ CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
 });
 ```
 
+`subscribe( subscriptionId, path, callback )`
+
 ### unsubscribe
 
 So a specific property from the state can be subscribed to from many places. Making sure we only `unsubscribe` from those places we mean to do we need to tell the method both the **subscription ID** and **the path**.
@@ -101,3 +107,5 @@ CarStore.unsubscribe('fordSalesCard', 'sales.ford');
 ```
 
 From that moment on the subscription is destroyed and the callback will no longer by triggered.
+
+`unsubscribe( subscriptionId, path )`
