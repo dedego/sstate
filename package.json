@@ -1,11 +1,14 @@
 {
-  "name": "sshtate",
+  "name": "sstate",
   "version": "0.1.0",
   "description": "Simplfied State Management",
-  "main": "./src/index.js",
+  "main": "dist/index.js",
+  "umd:main": "dist/index.umd.js",
+  "module": "dist/index.m.js",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "parcel build ./src/index.js --target browser --detailed-report"
+    "start": "parcel index.html --out-dir build/output",
+    "build": "microbundle",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,7 @@
   },
   "homepage": "https://gitlab.com/dedego84/sshtate#readme",
   "devDependencies": {
+    "microbundle": "^0.11.0",
     "parcel-bundler": "^1.12.3"
   },
   "browserslist": [

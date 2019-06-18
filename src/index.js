@@ -36,14 +36,14 @@ const set = (root, key, val) => {
 const ev = (storeEl, unique, key, cb) => {
     const callback = ({ detail }) => cb(detail.new, detail.previous);
     if (cb) Listeners[unique] = callback;
-    storeEl[!cb ? 'removeEventListener' : 'addEventListener'](`Sshtate.${key}`, !cb ? Listeners[unique] : callback);
+    storeEl[!cb ? 'removeEventListener' : 'addEventListener'](`Sstate.${key}`, !cb ? Listeners[unique] : callback);
     if (!cb) delete Listeners[unique];
 }
 
 /**
- * Sshtate simplified store
+ * Sstate simplified store
  */
-class Sshtate {
+class Sstate {
     constructor(initialState) {
         storeEl = document.createElement('meta');
         state = initialState || {};
@@ -52,7 +52,7 @@ class Sshtate {
         const currentState = this.getState(key);
         if (JSON.stringify(val) !== JSON.stringify(currentState)) {
             set(state, key, val);
-            storeEl.dispatchEvent(new CustomEvent(`Sshtate.${key}`, {
+            storeEl.dispatchEvent(new CustomEvent(`Sstate.${key}`, {
                 bubbles: true,
                 detail: { new: val, previous: currentState }
             }));
@@ -69,5 +69,5 @@ class Sshtate {
     }
 }
 
-export default Sshtate;
-export { Sshtate };
+export default Sstate;
+export { Sstate };

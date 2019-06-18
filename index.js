@@ -1,9 +1,9 @@
-import { Sshtate } from './src/index';
+import { Sstate } from './dist/index.m';
 
-const Food = new Sshtate({ 
+const Food = new Sstate({ 
     bread: { 
         baguette: 2, 
-        loaf: 6 
+        wholeWeat: 6 
     }, 
     fruit: { 
         apples: 11, 
@@ -13,16 +13,16 @@ const Food = new Sshtate({
 
 const logChange = (prefix, data) => console.log(prefix, data);
 
-Food.subscribe('subscriptionId1', 'bread.loaf', data => logChange('subscriptionId1:', data));
-Food.subscribe('subscriptionId2', 'bread.loaf', data => logChange('subscriptionId2:', data));
+Food.subscribe('subscriptionId1', 'bread.wholeWeat', data => logChange('subscriptionId1:', data));
+Food.subscribe('subscriptionId2', 'bread.wholeWeat', data => logChange('subscriptionId2:', data));
 
-Food.setState('bread.loaf', 25);
-Food.setState('bread.loaf', 23);
+Food.setState('bread.wholeWeat', 25);
+Food.setState('bread.wholeWeat', 23);
 
-Food.unsubscribe('subscriptionId1', 'bread.loaf');
+Food.unsubscribe('subscriptionId1', 'bread.wholeWeat');
 console.log('Unsubscribed subscriptionId1');
 
-Food.setState('bread.loaf', 21);
-Food.setState('bread.loaf', 24);
+Food.setState('bread.wholeWeat', 21);
+Food.setState('bread.wholeWeat', 24);
 
 console.log('Complete state:', Food.getState());
