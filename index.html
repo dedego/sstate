@@ -9,29 +9,7 @@
 </head>
 
 <body>
-    <script src="./src/index.js"></script>
-    <script>
-
-        const Food = new Sshtate({ bread: { baguette: 2, loaf: 6 }, fruit: { apples: 11, bananas: 1 } });
-        const logChange = (data) => console.log('data:',data);
-
-        Food.subscribe('qwe', 'bread.loaf', logChange);
-        Food.subscribe('asd', 'bread.loaf', (foo) => {
-            console.info('foo:', foo);
-        });
-        
-        Food.setState('bread.loaf', 25);
-        Food.setState('bread.loaf', 23);
-        
-        Food.unsubscribe('qwe', 'bread.loaf');
-        Food.unsubscribe('asd', 'bread.loaf');
-        
-        Food.setState('bread.loaf', 21);
-        Food.setState('bread.loaf', 24);
-
-        console.log( Food.getState());
-        
-    </script>
+    <script src="index.js"></script>
 </body>
 
 </html>

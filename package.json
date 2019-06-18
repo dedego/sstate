@@ -1,0 +1,30 @@
+{
+  "name": "sshtate",
+  "version": "0.1.0",
+  "description": "Simplfied State Management",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build ./src/index.js --target browser --detailed-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/dedego84/sshtate.git"
+  },
+  "keywords": [
+    "State",
+    "management"
+  ],
+  "author": "Dennis de Goede",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/dedego84/sshtate/issues"
+  },
+  "homepage": "https://gitlab.com/dedego84/sshtate#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3"
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}
