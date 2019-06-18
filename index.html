@@ -9,62 +9,28 @@
 </head>
 
 <body>
+    <script src="./src/index.js"></script>
     <script>
-        ((win) => {
-            let state;
-            let storeEl;
-
-            const set = (root, key, val) => {
-                const keyParts = key.split('.');
-                const len = keyParts.length;
-                for (var i = 0; i < len - 1; i++) {
-                    var currentKey = keyParts[i];
-                    if (!root[currentKey]) root[currentKey] = {}
-                    root = root[currentKey];
-                }
-                root[keyParts[len - 1]] = val;
-            };
-
-            class Sshtate {
-                constructor(initialState) {
-                    storeEl = document.createElement('meta');
-                    state = initialState || {};
-                }
-                setState(key, val) {
-                    const currentState = this.getState(key);
-                    if (JSON.stringify(val) !== JSON.stringify(currentState)) {
-                        set(state, key, val);
-                        storeEl.dispatchEvent(new CustomEvent(`Sshtate.${key}`, {
-                            bubbles: true,
-                            detail: val
-                        }));
-                    }
-                }
-                listen(key, cb) {
-                    storeEl.addEventListener(`Sshtate.${key}`, ({ detail }) => cb(detail));
-                }
-                getState(key) {
-                    if (key === undefined) return state;
-                    let valueOnkey = state;
-                    const nestedKey = key.split('.');
-                    for (let i = 0; i < nestedKey.length; i++) {
-                        valueOnkey = valueOnkey[nestedKey[i]];
-                    }
-                    return valueOnkey;
-                }
-            }
-
-            win.Sshtate = Sshtate;
-        })(window);
 
         const Food = new Sshtate({ bread: { baguette: 2, loaf: 6 }, fruit: { apples: 11, bananas: 1 } });
+        const logChange = (data) => console.log('data:',data);
 
-        Food.listen('bread.loaf', (ev) => console.log(ev));
-
+        Food.subscribe('qwe', 'bread.loaf', logChange);
+        Food.subscribe('asd', 'bread.loaf', (foo) => {
+            console.info('foo:', foo);
+        });
+        
         Food.setState('bread.loaf', 25);
         Food.setState('bread.loaf', 23);
+        
+        Food.unsubscribe('qwe', 'bread.loaf');
+        Food.unsubscribe('asd', 'bread.loaf');
+        
         Food.setState('bread.loaf', 21);
+        Food.setState('bread.loaf', 24);
 
+        console.log( Food.getState());
+        
     </script>
 </body>
 
