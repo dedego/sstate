@@ -1,6 +1,5 @@
 let state;
-let storeEl;
-let Listeners = {};
+let Listeners;
 
 /**
  * Helper method to get the value of a nested object property.
@@ -33,36 +32,51 @@ const set = (root, key, val) => {
  * @param {*} key 
  * @param {*} cb 
  */
-const ev = (storeEl, unique, key, cb) => {
-    const callback = ({ detail }) => cb(detail.new, detail.previous);
-    if (cb) Listeners[unique] = callback;
-    storeEl[!cb ? 'removeEventListener' : 'addEventListener'](`Sstate.${key}`, !cb ? Listeners[unique] : callback);
-    if (!cb) delete Listeners[unique];
+const bind = (Listeners, unique, key, cb) => {
+    const callback = ({ next, previous }) => cb(next, previous);
+    if (!Listeners[key]) Listeners[key] = {};
+    if (!cb && Listeners[key] && Listeners[key][unique]) {
+        delete Listeners[key][unique];
+    } else {
+        Listeners[key][unique] = callback;
+    }
 }
+const unbind = (Listeners, unique, key) => bind(Listeners, unique, key);
+
+/**
+ * Helper method to trigger all listening callbacks
+ * @param {*} Listeners 
+ * @param {*} key 
+ * @param {*} next 
+ * @param {*} previous 
+ */
+const trigger = (Listeners, key, next, previous) => {
+    if (!Listeners[key]) return;
+    Object.keys(Listeners[key]).forEach(unique => {
+        Listeners[key][unique]({ next, previous });
+    });
+};
 
 /**
  * Sstate simplified store
  */
 class Sstate {
     constructor(initialState) {
-        storeEl = document.createElement('meta');
         state = initialState || {};
+        Listeners = {};
     }
-    setState(key, val) {
-        const currentState = this.getState(key);
-        if (JSON.stringify(val) !== JSON.stringify(currentState)) {
-            set(state, key, val);
-            storeEl.dispatchEvent(new CustomEvent(`Sstate.${key}`, {
-                bubbles: true,
-                detail: { new: val, previous: currentState }
-            }));
+    setState(key, next) {
+        const previous = this.getState(key);
+        if (JSON.stringify(next) !== JSON.stringify(previous)) {
+            set(state, key, next);
+            trigger(Listeners, key, next, previous);
         }
     }
     subscribe(unique, key, cb) {
-        ev(storeEl, unique, key, cb);
+        bind(Listeners, unique, key, cb);
     }
-    unsubscribe(unique, key, cb) {
-        ev(storeEl, unique, key);
+    unsubscribe(unique, key) {
+        unbind(Listeners, unique, key);
     }
     getState(key) {
         return key === undefined ? state : get(state, key);

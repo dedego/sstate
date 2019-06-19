@@ -2,6 +2,14 @@
 
 Sstate is a simplified take on state management. You can easily setup your own store and start adding state, subscribing to parts of the state or request the complete state.
 
+## Changelog
+
+| Version | Changes                     |
+| ------- | --------------------------- |
+| 0.1.0   | Initial version of Sstate |
+| 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use |
+
+
 ## Example
 
 **Store.js**
