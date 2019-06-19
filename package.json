@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
