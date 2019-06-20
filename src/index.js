@@ -6,8 +6,13 @@ let Listeners;
  * @param {*} root 
  * @param {*} key 
  */
-const get = (root, key) => key.split('.').reduce((acc, current) => acc[current], root);
-
+const get = (root, key) => {
+    try {
+        return key.split('.').reduce((acc, current) => acc[current], root);
+    } catch(e) {
+        return null;
+    }
+};
 /**
  * Helper method to set value of a nested object property.
  * @param {*} root 
@@ -33,12 +38,11 @@ const set = (root, key, val) => {
  * @param {*} cb 
  */
 const bind = (Listeners, unique, key, cb) => {
-    const callback = ({ next, previous }) => cb(next, previous);
     if (!Listeners[key]) Listeners[key] = {};
     if (!cb && Listeners[key] && Listeners[key][unique]) {
         delete Listeners[key][unique];
     } else {
-        Listeners[key][unique] = callback;
+        Listeners[key][unique] = ({ next, previous }) => cb(next, previous);
     }
 }
 const unbind = (Listeners, unique, key) => bind(Listeners, unique, key);

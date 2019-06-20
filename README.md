@@ -8,6 +8,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
 | ------- | --------------------------- |
 | 0.1.0   | Initial version of Sstate |
 | 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use |
+| 0.2.1   | Fixed the getState in case it is called with a non existing path |
 
 
 ## Example
