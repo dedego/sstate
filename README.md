@@ -15,7 +15,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
 
 **Store.js**
 
-```
+```javascript
 import { Sstate } from 'sstate';
 
 const FoodStore = new Sstate({ 
@@ -35,7 +35,7 @@ export { FoodStore }
 
 **BreadView.js**
 
-```
+```javascript
 import { FoodStore } from 'Store'; 
 
 FoodStore.subscribe('bread', 'bread.wholeWeat', (newValue, oldValue) => {
@@ -60,7 +60,7 @@ console.log(FoodStore.getState());
 
 You can create a new store with a initial state, by passing a state object into the constructor.
 
-```
+```javascript
 const initialState = { 
     brands: ['volvo', 'ford' ], 
     sales: {
@@ -74,7 +74,7 @@ const CarStore = new Sstate(initialState);
 ### setState
 From the moment we have a store instance, we can start to manipulate the state by using `setState` on the store instance.
 
-```
+```javascript
 const currentBrands = CarStore.getState('brands');
 CarStore.setState('brands', currentBrands.push('audi') );
 ```
@@ -89,7 +89,7 @@ After calling setState the state is updated. Without a subscription or requestin
 
 In the previous example we already see that you can get a propery from the initial state by calling `getState` on the store instance. The getState allows for easy access to deeper nested properties like so:
 
-```
+```javascript
 CarStore.getState('sales.ford');
 ```
 
@@ -99,7 +99,7 @@ CarStore.getState('sales.ford');
 
 Subscription is a nice way to listen to specific changes on the state. By subscription you specify a **subscription ID**, **the path** (same as with the `getState` method) and last but not least **a callback method**, which will be passed two values, the new value and the previous value.
 
-```
+```javascript
 CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
     FordSalesCard.enablePromotion = new < old;
 });
@@ -111,7 +111,7 @@ CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
 
 So a specific property from the state can be subscribed to from many places. Making sure we only `unsubscribe` from those places we mean to do we need to tell the method both the **subscription ID** and **the path**.
 
-```
+```javascript
 CarStore.unsubscribe('fordSalesCard', 'sales.ford');
 ```
 
