@@ -78,6 +78,7 @@ class Sstate {
     }
     subscribe(unique, key, cb) {
         bind(Listeners, unique, key, cb);
+        return unbind.bind(this, Listeners, unique, key);
     }
     unsubscribe(unique, key) {
         unbind(Listeners, unique, key);

@@ -2,6 +2,15 @@
 
 Sstate is a simplified take on state management. You can easily setup your own store and start adding state, subscribing to parts of the state or request the complete state.
 
+1. [Getting started](#getting-started)
+    1. [Example](#example)
+3. [API](#api)
+    1. [setState](#setState)
+    2. [getState](#getState)
+    3. [subscribe](#subscribe)
+    4. [unsubscribe](#unsubscribe)
+
+
 ## Changelog
 
 | Version | Changes                     |
@@ -9,9 +18,17 @@ Sstate is a simplified take on state management. You can easily setup your own s
 | 0.1.0   | Initial version of Sstate |
 | 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use |
 | 0.2.1   | Fixed the getState in case it is called with a non existing path |
+| 0.3.0   | Allow for eassier unsubscribe, see [subscribe](#subscribe) |
 
 
-## Example
+## Getting started
+
+`npm i sstate --save`
+
+You can also have a look here for the react wrapper [react-sstate](https://www.npmjs.com/package/react-sstate).
+
+
+### Example
 
 **Store.js**
 
@@ -100,16 +117,19 @@ CarStore.getState('sales.ford');
 Subscription is a nice way to listen to specific changes on the state. By subscription you specify a **subscription ID**, **the path** (same as with the `getState` method) and last but not least **a callback method**, which will be passed two values, the new value and the previous value.
 
 ```javascript
-CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
+const unsubscribeFordSales = CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
     FordSalesCard.enablePromotion = new < old;
 });
+
+// When it is time to stop listening to the changes, just call:
+unsubscribeFordSales();
 ```
 
 `subscribe( subscriptionId, path, callback )`
 
 ### unsubscribe
 
-So a specific property from the state can be subscribed to from many places. Making sure we only `unsubscribe` from those places we mean to do we need to tell the method both the **subscription ID** and **the path**.
+So a specific property from the state can be subscribed to from many places. Making sure we only `unsubscribe` from those places we mean to do we need to tell the method both the **subscription ID** and **the path**. Allthough the subscribe method gives us an easy way for unsubscribing, this method allows us to unsubscribe from everywhere where we have a store instance.
 
 ```javascript
 CarStore.unsubscribe('fordSalesCard', 'sales.ford');

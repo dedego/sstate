@@ -1,12 +1,14 @@
 {
   "name": "sstate",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
   "module": "dist/index.m.js",
   "scripts": {
     "start": "parcel index.html --out-dir build/output",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
     "build": "microbundle",
     "prepublish": "npm run build"
   },
@@ -25,10 +27,23 @@
   },
   "homepage": "https://gitlab.com/dedego84/sshtate#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
     "microbundle": "^0.11.0",
     "parcel-bundler": "^1.12.3"
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
+  }
 }
