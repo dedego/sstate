@@ -8,7 +8,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
     1. [setState](#setState)
     2. [getState](#getState)
     3. [subscribe](#subscribe)
-    4. [unsubscribe](#unsubscribe)
+    4. [unsubscribe](#unsubscribe) *removed in v1.0.0*
 
 
 ## Changelog
@@ -19,6 +19,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
 | 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use |
 | 0.2.1   | Fixed the getState in case it is called with a non existing path |
 | 0.3.0   | Allow for eassier unsubscribe, see [subscribe](#subscribe) |
+| 1.0.0   | Simplified the API, removed unsubscribe, removed unique subscriptionId |
 
 
 ## Getting started
@@ -92,8 +93,7 @@ const CarStore = new Sstate(initialState);
 From the moment we have a store instance, we can start to manipulate the state by using `setState` on the store instance.
 
 ```javascript
-const currentBrands = CarStore.getState('brands');
-CarStore.setState('brands', currentBrands.push('audi') );
+CarStore.setState('brands', ['audi'].concat(CarStore.getState('brands')) );
 ```
 
 The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unmodified and subscribers will not be notified of any changes.
@@ -114,10 +114,10 @@ CarStore.getState('sales.ford');
 
 ### subscribe
 
-Subscription is a nice way to listen to specific changes on the state. By subscription you specify a **subscription ID**, **the path** (same as with the `getState` method) and last but not least **a callback method**, which will be passed two values, the new value and the previous value.
+Subscription is a nice way to listen to specific changes on the state. By providing **a path** (same as with the `getState` method) and **a callback method**, which will be passed two values, the new value and the previous value.
 
 ```javascript
-const unsubscribeFordSales = CarStore.subscribe('fordSalesCard', 'sales.ford', (new, old) => {
+const unsubscribeFordSales = CarStore.subscribe('sales.ford', (new, old) => {
     FordSalesCard.enablePromotion = new < old;
 });
 
@@ -125,16 +125,8 @@ const unsubscribeFordSales = CarStore.subscribe('fordSalesCard', 'sales.ford', (
 unsubscribeFordSales();
 ```
 
-`subscribe( subscriptionId, path, callback )`
+`subscribe( path, callback )`
 
 ### unsubscribe
 
-So a specific property from the state can be subscribed to from many places. Making sure we only `unsubscribe` from those places we mean to do we need to tell the method both the **subscription ID** and **the path**. Allthough the subscribe method gives us an easy way for unsubscribing, this method allows us to unsubscribe from everywhere where we have a store instance.
-
-```javascript
-CarStore.unsubscribe('fordSalesCard', 'sales.ford');
-```
-
-From that moment on the subscription is destroyed and the callback will no longer by triggered.
-
-`unsubscribe( subscriptionId, path )`
+Unsubscribe was removed as of version 1.0.0, use the returned function from subscription to unsubscribe.
