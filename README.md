@@ -20,6 +20,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
 | 0.2.1   | Fixed the getState in case it is called with a non existing path |
 | 0.3.0   | Allow for eassier unsubscribe, see [subscribe](#subscribe) |
 | 1.0.0   | Simplified the API, removed unsubscribe, removed unique subscriptionId |
+| 1.0.1   | Removed unsubscribe from the example |
 
 
 ## Getting started
@@ -56,13 +57,13 @@ export { FoodStore }
 ```javascript
 import { FoodStore } from 'Store'; 
 
-FoodStore.subscribe('bread', 'bread.wholeWeat', (newValue, oldValue) => {
+const unsubscribe = FoodStore.subscribe('bread', 'bread.wholeWeat', (newValue, oldValue) => {
     console.log(`Prices on Whole Wheat bread have gone ${newValue > oldValue ? 'up' : 'down'}`);
 });
 
 FoodStore.setState('bread.wholeWeat', 4);
 FoodStore.setState('bread.wholeWeat', 2);
-FoodStore.unsubscribe('bread', 'bread.wholeWeat')
+unsubscribe();
 
 // This will not be logged anymore, but the actual state did change.
 FoodStore.setState('bread.wholeWeat', 6);
