@@ -1,3 +1,4 @@
+const uuid = () => '_' + Math.random().toString(36).substr(2, 9);
 const get = (obj, key) => {
   try {
     return key.split(".").reduce((acc, curr) => acc[curr], obj);
@@ -24,4 +25,4 @@ const setUnset = (root, key, value) => {
 const set = (root, key, value) => setUnset(root, key, value);
 const unset = (root, key) => setUnset(root, key);
 
-export { get, set, unset };
+export { uuid, get, set, unset };

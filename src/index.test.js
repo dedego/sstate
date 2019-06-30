@@ -1,4 +1,4 @@
-import { Sstate } from "../dist/index.m";
+import { Sstate } from "./index";
 
 let CarStore;
 let FoodStore;
@@ -24,11 +24,18 @@ describe("Sstate scenarios", () => {
   });
 
   test("Sstate subscribe/unsubscribe", () => {
+    // Testing the ammount of times the callback is called
     const CallbackMock = jest.fn();
     const unsubscribe = CarStore.subscribe(
       "brands.mercedes.sales",
       CallbackMock
     );
+
+    // Testing the subscribe method returning both the next and previous value
+    CarStore.subscribe("brands.mercedes.sales", (next, previous) =>
+      expect(next).toBeGreaterThan(previous)
+    );
+
     // Adding sales for Mercedes
     CarStore.setState("brands.mercedes.sales", 8);
     CarStore.setState("brands.mercedes.sales", 11);

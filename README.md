@@ -129,14 +129,15 @@ Unsubscribe was removed as of version 1.0.0, use the returned function from subs
 
 ## Changelog
 
-| Version | Changes                                                                |
-| ------- | ---------------------------------------------------------------------- |
-| 0.1.0   | Initial version of Sstate                                              |
-| 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use   |
-| 0.2.1   | Fixed the getState in case it is called with a non existing path       |
-| 0.3.0   | Allow for eassier unsubscribe, see [subscribe](#subscribe)             |
-| 1.0.0   | Simplified the API, removed unsubscribe, removed unique subscriptionId |
-| 1.0.1   | Removed unsubscribe from the example                                   |
-| 1.0.2   | Improved unset, fixed documentation, added utility tests               |
-| 1.0.3   | Replaced microbundle in favor of rollup                                |
-| 1.0.4   | Replaced CJS by UMD build only                                         |
+| Version | Changes                                                                             |
+| ------- | ----------------------------------------------------------------------------------- |
+| 0.1.0   | Initial version of Sstate                                                           |
+| 0.2.0   | Improved subscription to not rely on a DOM node for more Generic use                |
+| 0.2.1   | Fixed the getState in case it is called with a non existing path                    |
+| 0.3.0   | Allow for eassier unsubscribe, see [subscribe](#subscribe)                          |
+| 1.0.0   | Simplified the API, removed unsubscribe, removed unique subscriptionId              |
+| 1.0.1   | Removed unsubscribe from the example                                                |
+| 1.0.2   | Improved unset, fixed documentation, added utility tests                            |
+| 1.0.3   | Replaced microbundle in favor of rollup                                             |
+| 1.0.4   | Replaced CJS by UMD build only                                                      |
+| 1.0.5   | Corrected the subscription callback method, changed the UUID generation             |

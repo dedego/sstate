@@ -1,4 +1,4 @@
-import { get, set, unset } from "./utility";
+import { uuid, get, set, unset } from "./utility";
 
 let obj;
 describe("Sstate scenarios", () => {
@@ -10,6 +10,13 @@ describe("Sstate scenarios", () => {
         }
       }
     };
+  });
+
+  test("[uuid] Generate 1000 unique IDs", () => {
+    let uniqueIds = [];
+    for (let i = 0; i < 1000; i++) uniqueIds.push(uuid());
+    const filter = (a, i, arr) => arr.indexOf(a) !== arr.lastIndexOf(a);
+    expect(uniqueIds.filter(filter)).toBeTruthy();
   });
 
   test("[get] for intermediate parts of the object", () => {

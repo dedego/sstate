@@ -1,4 +1,4 @@
-import { get, set, unset } from "./utility";
+import { uuid, get, set, unset } from "./utility";
 
 class Sstate {
   constructor(initialState) {
@@ -17,12 +17,12 @@ class Sstate {
       const subscriptionsForKey = get(this.__sstate__subscribers, key);
       if (!subscriptionsForKey) return;
       Object.keys(subscriptionsForKey).forEach(unique => {
-        subscriptionsForKey[unique]({ next, previous });
+        subscriptionsForKey[unique](next, previous);
       });
     }
   }
   subscribe(key, cb) {
-    const id = `${key}.ID${Date.now()}`;
+    const id = `${key}.${uuid()}}`;
     this.__sstate__subscribers = set(this.__sstate__subscribers, id, cb);
     return () =>
       (this.__sstate__subscribers = unset(this.__sstate__subscribers, id));
