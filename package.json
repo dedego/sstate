@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
@@ -9,7 +9,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "build": "microbundle",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",

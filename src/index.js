@@ -24,7 +24,8 @@ class Sstate {
   subscribe(key, cb) {
     const id = `${key}.ID${Date.now()}`;
     this.__sstate__subscribers = set(this.__sstate__subscribers, id, cb);
-    return unset.bind(this, this.__sstate__subscribers, id);
+    return () =>
+      (this.__sstate__subscribers = unset(this.__sstate__subscribers, id));
   }
 }
 
