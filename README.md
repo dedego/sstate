@@ -138,3 +138,4 @@ Unsubscribe was removed as of version 1.0.0, use the returned function from subs
 | 1.0.0   | Simplified the API, removed unsubscribe, removed unique subscriptionId |
 | 1.0.1   | Removed unsubscribe from the example                                   |
 | 1.0.2   | Improved unset, fixed documentation, added utility tests               |
+| 1.0.3   | Replaced microbundle in favor of rollup                                |

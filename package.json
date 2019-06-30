@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "build": "microbundle",
+    "build": "rollup -c",
     "prepublishOnly": "npm run test && npm run build"
   },
   "repository": {
@@ -30,7 +30,7 @@
     "@babel/preset-env": "^7.4.5",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "microbundle": "^0.11.0"
+    "rollup": "^1.16.3"
   },
   "browserslist": [
     "defaults"
