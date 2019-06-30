@@ -139,3 +139,4 @@ Unsubscribe was removed as of version 1.0.0, use the returned function from subs
 | 1.0.1   | Removed unsubscribe from the example                                   |
 | 1.0.2   | Improved unset, fixed documentation, added utility tests               |
 | 1.0.3   | Replaced microbundle in favor of rollup                                |
+| 1.0.4   | Replaced CJS by UMD build only                                         |

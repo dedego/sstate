@@ -1,4 +1,4 @@
-import { Sstate } from "./index";
+import { Sstate } from "../dist/index.m";
 
 let CarStore;
 let FoodStore;

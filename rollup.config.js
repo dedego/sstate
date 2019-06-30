@@ -1,21 +1,21 @@
+import pkg from "./package.json";
+
 module.exports = {
   input: "src/index.js",
   output: [
     {
-      file: "dist/index.js",
-      format: "cjs",
-      exports: "named"
-    },
-    {
-      file: "dist/index.umd.js",
+      file: pkg["main"],
       format: "umd",
-      name: "sstate",
-      exports: "named"
+      sourcemap: true,
+      exports: "named",
+      name: "Sstate"
     },
     {
-      file: "dist/index.m.js",
+      file: pkg["module"],
       format: "esm",
-      exports: "named"
+      sourcemap: true,
+      exports: "named",
+      name: "Sstate"
     }
   ]
 };
