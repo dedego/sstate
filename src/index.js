@@ -1,9 +1,15 @@
 import { uuid, get, set, unset } from "./utility";
 
 class Sstate {
-  constructor(initialState) {
-    this.__sstate__state = initialState || {};
+  constructor(initialState = {}, actions = {}) {
+    this.__sstate__state = initialState;
     this.__sstate__subscribers = {};
+    this.__sstate__actions = actions;
+  }
+  exec(name) {
+    const action = this.__sstate__actions[name];
+    if (!action) return;
+    action(this.setState.bind(this), this.__sstate__state);
   }
   getState(key) {
     return key === undefined

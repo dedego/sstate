@@ -8,7 +8,7 @@ Sstate is a simplified take on state management. You can easily setup your own s
    1. [setState](#setState)
    2. [getState](#getState)
    3. [subscribe](#subscribe)
-   4. [unsubscribe](#unsubscribe) _removed in v1.0.0_
+   4. [exec](#exec)
 3. [Changelog](#changelog)
 
 ## Getting started
@@ -25,13 +25,19 @@ You can also have a look here for the react wrapper [react-sstate](https://www.n
 import { Sstate } from "sstate";
 
 const FoodStore = new Sstate({
-  bread: {
-    baguette: 4,
-    wholeWeat: 3
-  },
-  fruit: {
-    apples: 0.5,
-    bananas: 1
+  stock: {
+    bread: {
+      baguette: 4,
+      wholeWeat: 3
+    },
+    fruit: {
+      apples: 0.5,
+      bananas: 1
+    }
+  }
+}, {
+  updateStock: (setState, state) => {
+    axios.get('/api/stock').then(({data}) => setState('stock', data));
   }
 });
 
@@ -45,7 +51,7 @@ export { FoodStore };
 import { FoodStore } from "Store";
 
 const unsubscribe = FoodStore.subscribe(
-  "bread.wholeWeat",
+  "stock.bread.wholeWeat",
   (newValue, oldValue) => {
     console.log(
       `Prices on Whole Wheat bread have gone ${
@@ -55,23 +61,27 @@ const unsubscribe = FoodStore.subscribe(
   }
 );
 
-FoodStore.setState("bread.wholeWeat", 4);
-FoodStore.setState("bread.wholeWeat", 2);
+FoodStore.setState("stock.bread.wholeWeat", 4);
+FoodStore.setState("stock.bread.wholeWeat", 2);
 unsubscribe();
 
 // This will not be logged anymore, but the actual state did change.
-FoodStore.setState("bread.wholeWeat", 6);
+FoodStore.setState("stock.bread.wholeWeat", 6);
 
 // To validate if our Whole Weat bread has been updated to 6, we can call the following:
-console.log(FoodStore.getState("bread.wholeWeat"));
+console.log(FoodStore.getState("stock.bread.wholeWeat"));
 
 // Now if we request the whole state we just do as following
 console.log(FoodStore.getState());
+
+// To update the stock from the API, we can call our defined action `updateStock`
+FoodStore.exec('updateStock');
 ```
 
 ## API
 
 You can create a new store with a initial state, by passing a state object into the constructor.
+The second argument is an object with action definitions like the example below.
 
 ```javascript
 const initialState = {
@@ -81,7 +91,16 @@ const initialState = {
     ford: 92
   }
 };
-const CarStore = new Sstate(initialState);
+const actions = {
+  getLatestBrands: (setState, state) => {
+    axios
+      .get('/api/brands/latest')
+      .then(({ data }) => {
+        setState('brands', state.brands.concat(data));
+      });
+  }
+}
+const CarStore = new Sstate(initialState, actions);
 ```
 
 ### setState
@@ -123,9 +142,37 @@ unsubscribeFordSales();
 
 `subscribe( path, callback )`
 
-### unsubscribe
+### exec
 
-Unsubscribe was removed as of version 1.0.0, use the returned function from subscription to unsubscribe.
+As of version 1.1.0 there is the concept of actions that can be executed on the store which will result in a modified state.
+Actions can be provided as the second argument when initializing the store. At the moment of execution, the first argument gives
+you access to the `setState` method, the second argument gives you the complete state.
+
+```javascript
+const ToyStore = new Sstate({
+  electric: {
+    trains: 14,
+    automobile: 55,
+    powertools:  7
+  },
+  wood: {
+    bicycle: 2,
+    blocks: 12
+  }
+},
+{
+  updateElectric: (setState, state) => {
+    axios.get('/api/getStock/electric').then(({data}) => {
+      setState('electric', { ...state.electric, ...data });
+    });
+  }
+});
+
+// Now the updateElectric action is available through the EXEC method
+ToyStore.exec('updateElectric');
+```
+
+`exec(actionName)`
 
 ## Changelog
 
@@ -141,3 +188,4 @@ Unsubscribe was removed as of version 1.0.0, use the returned function from subs
 | 1.0.3   | Replaced microbundle in favor of rollup                                             |
 | 1.0.4   | Replaced CJS by UMD build only                                                      |
 | 1.0.5   | Corrected the subscription callback method, changed the UUID generation             |
+| 1.1.0   | Introduced actions                                                                  |

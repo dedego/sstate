@@ -1,4 +1,5 @@
 import { Sstate } from "./index";
+import { isTSAnyKeyword } from "@babel/types";
 
 let CarStore;
 let FoodStore;
@@ -18,9 +19,17 @@ describe("Sstate scenarios", () => {
       }
     });
 
-    FoodStore = new Sstate({
-      fruit: ["apples", "pears"]
-    });
+    FoodStore = new Sstate(
+      {
+        fruit: ["apples", "pears"]
+      },
+      {
+        addFruit: setState => {
+          setState("potato", 2);
+          setState("potato", 4);
+        }
+      }
+    );
   });
 
   test("Sstate subscribe/unsubscribe", () => {
@@ -98,11 +107,44 @@ describe("Sstate scenarios", () => {
     expect(Object.keys(fullState).length).toBe(2);
   });
 
+  test('Sstate Exec', () => {
+    const ExecStore = new Sstate({
+      executions: 0,
+      state: undefined
+    }, {
+      doSome: (setState, state) => {
+        setState('executions', state.executions + 1);
+        setState('state', Math.random());
+      }
+    });
+
+    const s = () => ExecStore.getState('state');
+    let state = s();
+
+    expect(ExecStore.getState('executions')).toBe(0);
+    
+    ExecStore.exec('doSome');
+    expect(state).not.toBe(s());
+    state = s();
+
+    ExecStore.exec('doSome');
+    expect(state).not.toBe(s());
+    state = s();
+
+    ExecStore.exec('doSome');
+    expect(state).not.toBe(s());
+    state = s();
+    
+    expect(ExecStore.getState('executions')).toBe(3);
+  });
+
   test("Multiple stores", () => {
     const FSMock = jest.fn();
     const CSMock = jest.fn();
+    const ACTIONMock = jest.fn();
 
     const usFS = FoodStore.subscribe("fruit", FSMock);
+    const usAFS = FoodStore.subscribe("potato", ACTIONMock);
     const usCS = CarStore.subscribe("brands.mercedes.sales", CSMock);
 
     CarStore.setState("brands.mercedes.sales", 8);
@@ -114,6 +156,9 @@ describe("Sstate scenarios", () => {
       ["bananas"].concat(FoodStore.getState("fruit"))
     );
     FoodStore.setState("fruit", ["mangos"].concat(FoodStore.getState("fruit")));
+
+    // Execute action
+    FoodStore.exec("addFruit");
 
     expect(FSMock).toHaveBeenCalledTimes(2);
     expect(CSMock).toHaveBeenCalledTimes(3);
@@ -127,5 +172,9 @@ describe("Sstate scenarios", () => {
 
     expect(FSMock).toHaveBeenCalledTimes(3);
     expect(CSMock).toHaveBeenCalledTimes(5);
+    expect(ACTIONMock).toHaveBeenCalledTimes(2);
+
+    expect(FoodStore.getState("potato")).toBe(4);
   });
+
 });
