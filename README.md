@@ -189,3 +189,4 @@ ToyStore.exec('updateElectric');
 | 1.0.4   | Replaced CJS by UMD build only                                                      |
 | 1.0.5   | Corrected the subscription callback method, changed the UUID generation             |
 | 1.1.0   | Introduced actions                                                                  |
+| 1.1.1   | Fixed the state returned in getState and the action(s) to be immutable              |

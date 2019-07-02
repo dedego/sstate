@@ -9,11 +9,13 @@ class Sstate {
   exec(name) {
     const action = this.__sstate__actions[name];
     if (!action) return;
-    action(this.setState.bind(this), this.__sstate__state);
+    const setState = this.setState.bind(this);
+    const state = Object.assign({}, this.__sstate__state)
+    action(setState, state);
   }
   getState(key) {
     return key === undefined
-      ? this.__sstate__state
+      ? Object.assign({}, this.__sstate__state)
       : get(this.__sstate__state, key);
   }
   setState(key, next) {

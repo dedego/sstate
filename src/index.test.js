@@ -1,5 +1,4 @@
 import { Sstate } from "./index";
-import { isTSAnyKeyword } from "@babel/types";
 
 let CarStore;
 let FoodStore;
@@ -91,6 +90,9 @@ describe("Sstate scenarios", () => {
     const intermediateState = CarStore.getState("brands.ford");
     expect(intermediateState).toBeInstanceOf(Object);
     expect(intermediateState.models).toBeInstanceOf(Array);
+
+    CarStore.getState().brands = null;
+    expect(CarStore.getState('brands')).not.toBeNull();
   });
 
   test("Sstate setState", () => {
@@ -115,6 +117,9 @@ describe("Sstate scenarios", () => {
       doSome: (setState, state) => {
         setState('executions', state.executions + 1);
         setState('state', Math.random());
+
+        // Cannot mutate state on the state object
+        state.executions = 10;
       }
     });
 
