@@ -212,3 +212,4 @@ exec(actionName, args)`
 | 1.1.1   | Fixed the state returned in getState and the action(s) to be immutable              |
 | 1.1.2   | Fixed typo in the unique keys for subscription, added aditional info on getState    |
 | 1.2.0   | Added parameters for `exec`, which are accessable in your actions                   |
+| 1.2.1   | Changed object.assign to deepClone to make sure we dont deal with references        |

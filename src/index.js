@@ -1,4 +1,4 @@
-import { uuid, get, set, unset } from "./utility";
+import { deepClone, uuid, get, set, unset } from "./utility";
 
 class Sstate {
   constructor(initialState = {}, actions = {}) {
@@ -10,19 +10,18 @@ class Sstate {
     const action = this.__sstate__actions[name];
     if (!action) return;
     const setState = this.setState.bind(this);
-    const state = Object.assign({}, this.__sstate__state)
+    const state = deepClone(this.__sstate__state);
     action(setState, state, args);
   }
   getState(key) {
-    return key === undefined
-      ? Object.assign({}, this.__sstate__state)
-      : get(this.__sstate__state, key);
+    const state = deepClone(this.__sstate__state);
+    return !key ? state : get(state, key);
   }
   setState(key, next) {
     const previous = this.getState(key);
     if (JSON.stringify(next) !== JSON.stringify(previous)) {
-      this.__sstate__state = set(this.__sstate__state, key, next);
-      const subscriptionsForKey = get(this.__sstate__subscribers, key);
+      this.__sstate__state = set(deepClone(this.__sstate__state), key, next);
+      const subscriptionsForKey = get(deepClone(this.__sstate__subscribers), key);
       if (!subscriptionsForKey) return;
       Object.keys(subscriptionsForKey).forEach(unique => {
         subscriptionsForKey[unique](next, previous);
@@ -31,9 +30,9 @@ class Sstate {
   }
   subscribe(key, cb) {
     const id = `${key}.${uuid()}`;
-    this.__sstate__subscribers = set(this.__sstate__subscribers, id, cb);
+    this.__sstate__subscribers = set(deepClone(this.__sstate__subscribers), id, cb);
     return () =>
-      (this.__sstate__subscribers = unset(this.__sstate__subscribers, id));
+      (this.__sstate__subscribers = unset(deepClone(this.__sstate__subscribers), id));
   }
 }
 

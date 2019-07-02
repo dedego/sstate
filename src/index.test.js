@@ -84,7 +84,7 @@ describe("Sstate scenarios", () => {
   });
 
   test("Sstate getState", () => {
-    const initialFordModels = CarStore.getState("brands.ford.models").join(",");
+    const initialFordModels = CarStore.getState("brands.ford.models").join(',');
     expect(initialFordModels).toBe("fiesta,cmax");
 
     const intermediateState = CarStore.getState("brands.ford");
@@ -107,6 +107,10 @@ describe("Sstate scenarios", () => {
     const fullState = CarStore.getState();
     // Expect the root state object to have two keys `brands` and `mercedes`.
     expect(Object.keys(fullState).length).toBe(2);
+
+    // Making sure deep copy does not destroy date instances.
+    CarStore.setState("mercedes.lastSale", new Date());
+    expect(CarStore.getState("mercedes.lastSale")).toBeInstanceOf(Date);
   });
 
   test("Sstate Exec", () => {

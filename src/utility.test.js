@@ -1,4 +1,4 @@
-import { uuid, get, set, unset } from "./utility";
+import { deepClone, uuid, get, set, unset } from "./utility";
 
 let obj;
 describe("Sstate scenarios", () => {
@@ -10,6 +10,32 @@ describe("Sstate scenarios", () => {
         }
       }
     };
+  });
+
+  test("[deepClone] test cloning functionality", () => {
+    let a = {
+      s: "string",
+      a: ["some", "array"],
+      o: { nested: "object" },
+      f: () => "function definition",
+      d: new Date()
+    };
+
+    const b = deepClone(a);
+
+    a.s = ["changed", "it", "to", "an", "array"];
+
+    // The deepcopy should still contain the copies and not a reference
+    expect(typeof b.s).toBe("string");
+    expect(b.a instanceof Array).toBeTruthy();
+    expect(b.o instanceof Object).toBeTruthy();
+    expect(b.f instanceof Function).toBeTruthy();
+    expect(b.d instanceof Date).toBeTruthy();
+
+    a.f = () => "some other text";
+
+    // Making sure it is not a reference function
+    expect(b.f()).toBe("function definition");
   });
 
   test("[uuid] Generate 1000 unique IDs", () => {
