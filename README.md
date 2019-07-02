@@ -1,16 +1,16 @@
 # Sstate
 
-Sstate is a simplified take on state management. You can easily setup your own store and start adding state, subscribing to parts of the state or request the complete state.
+Sstate is a simplified take on state management. You can easily setup your own store and start adding state, execution predefined actions, subscribing to parts of the state and request the complete state.
 
 1. [Getting started](#getting-started)
    1. [Example](#example)
 2. [API](#api)
-   1. [setState](#setState)
-   2. [getState](#getState)
+   1. [setState](#setstate)
+   2. [getState](#getstate)
    3. [subscribe](#subscribe)
    4. [exec](#exec)
 3. [Changelog](#changelog)
-
+---
 ## Getting started
 
 `npm i sstate --save`
@@ -77,7 +77,7 @@ console.log(FoodStore.getState());
 // To update the stock from the API, we can call our defined action `updateStock`
 FoodStore.exec('updateStock');
 ```
-
+---
 ## API
 
 You can create a new store with a initial state, by passing a state object into the constructor.
@@ -115,7 +115,10 @@ The setState method will do a simple diff between the old value and the newly gi
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
-`setState( path, newValue )`
+**Syntax:**
+```javascript
+setState( path, newValue )
+```
 
 ### getState
 
@@ -127,8 +130,11 @@ CarStore.getState("sales.ford");
 
 `getState` can also be called without a path to retrieve the complete state object.
 
-`getState()`
-`getState( path )`
+**Syntax:**
+```javascript
+getState()
+getState( path )
+```
 
 ### subscribe
 
@@ -143,13 +149,18 @@ const unsubscribeFordSales = CarStore.subscribe('sales.ford', (new, old) => {
 unsubscribeFordSales();
 ```
 
-`subscribe( path, callback )`
+**Syntax:**
+```javascript
+subscribe( path, callback )
+```
 
 ### exec
 
 As of version 1.1.0 there is the concept of actions that can be executed on the store which will result in a modified state.
 Actions can be provided as the second argument when initializing the store. At the moment of execution, the first argument gives
-you access to the `setState` method, the second argument gives you the complete state.
+you access to the `setState` method, the second argument gives you the complete state and the third argument allows for passing allong parameters.
+
+When calling the `exec` method, the first argument refers to the predefined action, the second argument can be used to pass along parameters.
 
 ```javascript
 const ToyStore = new Sstate({
@@ -162,21 +173,27 @@ const ToyStore = new Sstate({
     bicycle: 2,
     blocks: 12
   }
-},
-{
-  updateElectric: (setState, state) => {
-    axios.get('/api/getStock/electric').then(({data}) => {
-      setState('electric', { ...state.electric, ...data });
+}, {
+  update: (setState, state, { type }) => {
+    if(!['wood','electric'].includes(type)) return;
+    axios.get(`/api/getStock/${type}`).then(({data}) => {
+      setState(type, { ...state[type], ...data });
     });
   }
 });
 
-// Now the updateElectric action is available through the EXEC method
-ToyStore.exec('updateElectric');
+// Now the updateElectric action is available through the `exec` method
+ToyStore.exec('update', { type: 'electric' });
+ToyStore.exec('update', { type: 'wood' });
+// Exec is called, the update method prevents the axios call from being made. 
+ToyStore.exec('update', { type: 'GARBAGE' });
 ```
 
-`exec(actionName)`
-
+**Syntax:**
+```javascript
+exec(actionName, args)`
+```
+---
 ## Changelog
 
 | Version | Changes                                                                             |
@@ -191,6 +208,7 @@ ToyStore.exec('updateElectric');
 | 1.0.3   | Replaced microbundle in favor of rollup                                             |
 | 1.0.4   | Replaced CJS by UMD build only                                                      |
 | 1.0.5   | Corrected the subscription callback method, changed the UUID generation             |
-| 1.1.0   | Introduced actions                                                                  |
+| 1.1.0   | Introduced [actions](#exec)                                                         |
 | 1.1.1   | Fixed the state returned in getState and the action(s) to be immutable              |
 | 1.1.2   | Fixed typo in the unique keys for subscription, added aditional info on getState    |
+| 1.2.0   | Added parameters for `exec`, which are accessable in your actions                   |
