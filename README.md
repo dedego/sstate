@@ -174,6 +174,8 @@ you access to the `setState` method, the second argument gives you the complete 
 
 When calling the `exec` method, the first argument refers to the predefined action, the second argument can be used to pass along parameters.
 
+You can chain multiple actions in a single line (see example).
+
 > If you try to execute a action that is not defined when creating the store, a error will be thrown. If the type of action that is defined, is not a function a error will be thrown.
 
 ```javascript
@@ -200,8 +202,7 @@ const ToyStore = new Sstate(
 );
 
 // Now the "update" action is available through the `exec` method
-ToyStore.exec("update", { type: "electric" });
-ToyStore.exec("update", { type: "wood" });
+ToyStore.exec("update", { type: "electric" }).exec("update", { type: "wood" });
 // The update method prevents the axios call from being made,
 // because the type is not allowed.
 ToyStore.exec("update", { type: "GARBAGE" });
@@ -234,3 +235,4 @@ exec(actionName, args);
 | 1.2.0   | Added parameters for `exec`, which are accessable in your actions                |
 | 1.2.1   | Changed object.assign to deepClone to make sure we dont deal with references     |
 | 1.2.2   | Improved validation of the action before execution                               |
+| 1.2.3   | Allow chaining of `exec`ution of actions                                         |

@@ -31,7 +31,7 @@ describe("Sstate scenarios", () => {
     );
   });
 
-  test("Sstate subscribe/unsubscribe", () => {
+  test("[subscribe]", () => {
     // Testing the ammount of times the callback is called
     const CallbackMock = jest.fn();
     const unsubscribe = CarStore.subscribe(
@@ -62,40 +62,23 @@ describe("Sstate scenarios", () => {
     CarStore.setState("brands.mercedes.sales", 20);
 
     expect(CallbackMock).toHaveBeenCalledTimes(4);
+    expect(CarStore.getState("brands.mercedes.sales")).toBe(20);
   });
 
-  test("Sstate subscribe with unsubscribe returned from the subscribe method", () => {
-    const CallbackMock = jest.fn();
-    const unsubscribe = CarStore.subscribe("brands.ford.sales", CallbackMock);
-
-    // Adding sales for Ford.
-    CarStore.setState("brands.ford.sales", 8);
-
-    expect(CallbackMock).toHaveBeenCalledTimes(1);
-
-    // A convenient way of unsubscribing.
-    unsubscribe();
-
-    // Adding sales for Ford.
-    CarStore.setState("brands.ford.sales", 9);
-    CarStore.setState("brands.ford.sales", 11);
-
-    expect(CallbackMock).toHaveBeenCalledTimes(1);
-  });
-
-  test("Sstate getState", () => {
-    const initialFordModels = CarStore.getState("brands.ford.models").join(',');
-    expect(initialFordModels).toBe("fiesta,cmax");
-
+  test("[getState]", () => {
+    const initialFordModels = CarStore.getState("brands.ford.models").join(",");
     const intermediateState = CarStore.getState("brands.ford");
+
+    expect(initialFordModels).toBe("fiesta,cmax");
     expect(intermediateState).toBeInstanceOf(Object);
     expect(intermediateState.models).toBeInstanceOf(Array);
 
     CarStore.getState().brands = null;
+
     expect(CarStore.getState("brands")).not.toBeNull();
   });
 
-  test("Sstate setState", () => {
+  test("[setState]", () => {
     // Setting state on a path that does not exist yet, will just create it.
     CarStore.setState("mercedes.sales", 100);
 
@@ -108,12 +91,13 @@ describe("Sstate scenarios", () => {
     // Expect the root state object to have two keys `brands` and `mercedes`.
     expect(Object.keys(fullState).length).toBe(2);
 
-    // Making sure deep copy does not destroy date instances.
+    // Making sure deepClone does not destroy date instances.
     CarStore.setState("mercedes.lastSale", new Date());
     expect(CarStore.getState("mercedes.lastSale")).toBeInstanceOf(Date);
   });
 
-  test("Sstate Exec", () => {
+  test("[exec]", () => {
+    const ChainMock = jest.fn();
     const ExecStore = new Sstate(
       {
         executions: 0,
@@ -133,7 +117,8 @@ describe("Sstate scenarios", () => {
         doSomeWithArgs: (setState, state, { key, value }) => {
           setState(key, value);
         },
-        notAFunction: true
+        notAFunction: true,
+        chain: ChainMock
       }
     );
 
@@ -160,14 +145,24 @@ describe("Sstate scenarios", () => {
     });
 
     expect(() => {
-      ExecStore.exec('notAFunction');
-    }).toThrow("The requested action: notAFunction is not a executable function");
+      ExecStore.exec("notAFunction");
+    }).toThrow(
+      "The requested action: notAFunction is not a executable function"
+    );
     expect(() => {
-      ExecStore.exec('nonExistingFunction')
+      ExecStore.exec("nonExistingFunction");
     }).toThrow("The requested action: nonExistingFunction does not exist");
 
     expect(ExecStore.getState("executions")).toBe(3);
     expect(ExecStore.getState("withArgs")).toBeTruthy();
+
+    // Chaining executions
+    ExecStore.exec("chain")
+      .exec("doSome")
+      .exec("chain")
+      .exec("doSome")
+      .exec("chain");
+    expect(ChainMock).toHaveBeenCalledTimes(3);
   });
 
   test("Multiple stores", () => {

@@ -13,6 +13,7 @@ class Sstate {
     const setState = this.setState.bind(this);
     const state = deepClone(this.__sstate__state);
     action(setState, state, args);
+    return this;
   }
   getState(key) {
     const state = deepClone(this.__sstate__state);

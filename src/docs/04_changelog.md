@@ -18,3 +18,4 @@
 | 1.2.0   | Added parameters for `exec`, which are accessable in your actions                |
 | 1.2.1   | Changed object.assign to deepClone to make sure we dont deal with references     |
 | 1.2.2   | Improved validation of the action before execution                               |
+| 1.2.3   | Allow chaining of `exec`ution of actions                                         |
