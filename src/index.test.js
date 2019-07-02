@@ -132,7 +132,8 @@ describe("Sstate scenarios", () => {
         },
         doSomeWithArgs: (setState, state, { key, value }) => {
           setState(key, value);
-        }
+        },
+        notAFunction: true
       }
     );
 
@@ -158,8 +159,14 @@ describe("Sstate scenarios", () => {
       value: true
     });
 
-    expect(ExecStore.getState("executions")).toBe(3);
+    expect(() => {
+      ExecStore.exec('notAFunction');
+    }).toThrow("The requested action: notAFunction is not a executable function");
+    expect(() => {
+      ExecStore.exec('nonExistingFunction')
+    }).toThrow("The requested action: nonExistingFunction does not exist");
 
+    expect(ExecStore.getState("executions")).toBe(3);
     expect(ExecStore.getState("withArgs")).toBeTruthy();
   });
 

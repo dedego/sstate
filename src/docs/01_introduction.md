@@ -10,4 +10,5 @@ Sstate is a simplified take on state management. You can easily setup your own s
    3. [subscribe](#subscribe)
    4. [exec](#exec)
 3. [Changelog](#changelog)
+
 ---

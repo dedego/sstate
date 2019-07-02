@@ -13,13 +13,11 @@ const initialState = {
 };
 const actions = {
   getLatestBrands: (setState, state) => {
-    axios
-      .get('/api/brands/latest')
-      .then(({ data }) => {
-        setState('brands', state.brands.concat(data));
-      });
+    axios.get("/api/brands/latest").then(({ data }) => {
+      setState("brands", state.brands.concat(data));
+    });
   }
-}
+};
 const CarStore = new Sstate(initialState, actions);
 ```
 
@@ -36,8 +34,9 @@ The setState method will do a simple diff between the old value and the newly gi
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
 **Syntax:**
+
 ```javascript
-setState( path, newValue )
+setState(path, newValue);
 ```
 
 ### getState
@@ -51,9 +50,10 @@ CarStore.getState("sales.ford");
 `getState` can also be called without a path to retrieve the complete state object.
 
 **Syntax:**
+
 ```javascript
-getState()
-getState( path )
+getState();
+getState(path);
 ```
 
 ### subscribe
@@ -70,8 +70,9 @@ unsubscribeFordSales();
 ```
 
 **Syntax:**
+
 ```javascript
-subscribe( path, callback )
+subscribe(path, callback);
 ```
 
 ### exec
@@ -82,35 +83,43 @@ you access to the `setState` method, the second argument gives you the complete 
 
 When calling the `exec` method, the first argument refers to the predefined action, the second argument can be used to pass along parameters.
 
-```javascript
-const ToyStore = new Sstate({
-  electric: {
-    trains: 14,
-    automobile: 55,
-    powertools:  7
-  },
-  wood: {
-    bicycle: 2,
-    blocks: 12
-  }
-}, {
-  update: (setState, state, { type }) => {
-    if(!['wood','electric'].includes(type)) return;
-    axios.get(`/api/getStock/${type}`).then(({data}) => {
-      setState(type, { ...state[type], ...data });
-    });
-  }
-});
+> If you try to execute a action that is not defined when creating the store, a error will be thrown. If the type of action that is defined, is not a function a error will be thrown.
 
-// Now the updateElectric action is available through the `exec` method
-ToyStore.exec('update', { type: 'electric' });
-ToyStore.exec('update', { type: 'wood' });
-// Exec is called, the update method prevents the axios call from being made. 
-ToyStore.exec('update', { type: 'GARBAGE' });
+```javascript
+const ToyStore = new Sstate(
+  {
+    electric: {
+      trains: 14,
+      automobile: 55,
+      powertools: 7
+    },
+    wood: {
+      bicycle: 2,
+      blocks: 12
+    }
+  },
+  {
+    update: (setState, state, { type }) => {
+      if (!["wood", "electric"].includes(type)) return;
+      axios.get(`/api/getStock/${type}`).then(({ data }) => {
+        setState(type, { ...state[type], ...data });
+      });
+    }
+  }
+);
+
+// Now the "update" action is available through the `exec` method
+ToyStore.exec("update", { type: "electric" });
+ToyStore.exec("update", { type: "wood" });
+// The update method prevents the axios call from being made,
+// because the type is not allowed.
+ToyStore.exec("update", { type: "GARBAGE" });
 ```
 
 **Syntax:**
+
 ```javascript
-exec(actionName, args)`
+exec(actionName, args);
 ```
+
 ---
