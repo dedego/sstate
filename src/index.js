@@ -30,7 +30,7 @@ class Sstate {
     }
   }
   subscribe(key, cb) {
-    const id = `${key}.${uuid()}}`;
+    const id = `${key}.${uuid()}`;
     this.__sstate__subscribers = set(this.__sstate__subscribers, id, cb);
     return () =>
       (this.__sstate__subscribers = unset(this.__sstate__subscribers, id));

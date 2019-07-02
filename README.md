@@ -125,6 +125,9 @@ In the previous example we already see that you can get a propery from the initi
 CarStore.getState("sales.ford");
 ```
 
+`getState` can also be called without a path to retrieve the complete state object.
+
+`getState()`
 `getState( path )`
 
 ### subscribe
@@ -190,3 +193,4 @@ ToyStore.exec('updateElectric');
 | 1.0.5   | Corrected the subscription callback method, changed the UUID generation             |
 | 1.1.0   | Introduced actions                                                                  |
 | 1.1.1   | Fixed the state returned in getState and the action(s) to be immutable              |
+| 1.1.2   | Fixed typo in the unique keys for subscription, added aditional info on getState    |

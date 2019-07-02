@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
