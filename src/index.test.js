@@ -92,7 +92,7 @@ describe("Sstate scenarios", () => {
     expect(intermediateState.models).toBeInstanceOf(Array);
 
     CarStore.getState().brands = null;
-    expect(CarStore.getState('brands')).not.toBeNull();
+    expect(CarStore.getState("brands")).not.toBeNull();
   });
 
   test("Sstate setState", () => {
@@ -109,38 +109,54 @@ describe("Sstate scenarios", () => {
     expect(Object.keys(fullState).length).toBe(2);
   });
 
-  test('Sstate Exec', () => {
-    const ExecStore = new Sstate({
-      executions: 0,
-      state: undefined
-    }, {
-      doSome: (setState, state) => {
-        setState('executions', state.executions + 1);
-        setState('state', Math.random());
+  test("Sstate Exec", () => {
+    const ExecStore = new Sstate(
+      {
+        executions: 0,
+        state: undefined
+      },
+      {
+        doSome: (setState, state, args) => {
+          setState("executions", state.executions + 1);
+          setState("state", Math.random());
 
-        // Cannot mutate state on the state object
-        state.executions = 10;
+          // Cannot mutate state on the state object
+          state.executions = 10;
+
+          // Expect the passed arguments to be undefined
+          expect(args).toBeUndefined();
+        },
+        doSomeWithArgs: (setState, state, { key, value }) => {
+          setState(key, value);
+        }
       }
-    });
+    );
 
-    const s = () => ExecStore.getState('state');
+    const s = () => ExecStore.getState("state");
     let state = s();
 
-    expect(ExecStore.getState('executions')).toBe(0);
-    
-    ExecStore.exec('doSome');
+    expect(ExecStore.getState("executions")).toBe(0);
+
+    ExecStore.exec("doSome");
     expect(state).not.toBe(s());
     state = s();
 
-    ExecStore.exec('doSome');
+    ExecStore.exec("doSome");
     expect(state).not.toBe(s());
     state = s();
 
-    ExecStore.exec('doSome');
+    ExecStore.exec("doSome");
     expect(state).not.toBe(s());
     state = s();
-    
-    expect(ExecStore.getState('executions')).toBe(3);
+
+    ExecStore.exec("doSomeWithArgs", {
+      key: "withArgs",
+      value: true
+    });
+
+    expect(ExecStore.getState("executions")).toBe(3);
+
+    expect(ExecStore.getState("withArgs")).toBeTruthy();
   });
 
   test("Multiple stores", () => {
@@ -181,5 +197,4 @@ describe("Sstate scenarios", () => {
 
     expect(FoodStore.getState("potato")).toBe(4);
   });
-
 });

@@ -6,12 +6,12 @@ class Sstate {
     this.__sstate__subscribers = {};
     this.__sstate__actions = actions;
   }
-  exec(name) {
+  exec(name, args) {
     const action = this.__sstate__actions[name];
     if (!action) return;
     const setState = this.setState.bind(this);
     const state = Object.assign({}, this.__sstate__state)
-    action(setState, state);
+    action(setState, state, args);
   }
   getState(key) {
     return key === undefined

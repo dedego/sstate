@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+echo "Installing Precommit hook..."
+cd .git/hooks
+PRECOMMITFILE=pre-commit
+touch $PRECOMMITFILE
+> $PRECOMMITFILE
+echo "#!/bin/bash\n\n> ./README.md\ncat ./src/docs/*.md >> ./README.md\n\ngit add ./README.md" >> $PRECOMMITFILE

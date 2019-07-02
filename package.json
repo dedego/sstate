@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
@@ -8,6 +8,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "build": "rollup -c",
+    "preinstall": "sh installHooks",
     "prepublishOnly": "npm run test && npm run build"
   },
   "repository": {
