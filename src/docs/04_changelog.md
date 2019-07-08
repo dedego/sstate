@@ -20,3 +20,4 @@
 | 1.2.2   | Improved validation of the action before execution                               |
 | 1.2.3   | Allow chaining of `exec`ution of actions                                         |
 | 1.2.4   | Moved to GitHub                                                                  |
+| 1.2.5   | Corrected repo in package.json, corrected description                            |

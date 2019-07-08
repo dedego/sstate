@@ -1,7 +1,7 @@
 {
   "name": "sstate",
-  "version": "1.2.4",
-  "description": "Simplfied State Management",
+  "version": "1.2.5",
+  "description": "Simplified State",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
   "scripts": {
@@ -11,10 +11,7 @@
     "preinstall": "sh installHooks",
     "prepublishOnly": "npm run test && npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@gitlab.com/dedego84/sshtate.git"
-  },
+  "repository": "github:dedego/sstate",
   "keywords": [
     "State",
     "management"
