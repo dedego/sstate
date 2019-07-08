@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Simplfied State Management",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
@@ -22,9 +22,9 @@
   "author": "Dennis de Goede",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/dedego84/sshtate/issues"
+    "url": "https://github.com/dedego/sstate/issues"
   },
-  "homepage": "https://gitlab.com/dedego84/sshtate#readme",
+  "homepage": "https://github.com/dedego/sstate#readme",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
