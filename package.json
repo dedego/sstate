@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Simplified State",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
@@ -8,8 +8,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "build": "rollup -c",
-    "preinstall": "sh installHooks",
-    "prepublishOnly": "npm run test && npm run build"
+    "prepublishOnly": "sh installHooks && npm run test && npm run build"
   },
   "repository": "github:dedego/sstate",
   "keywords": [
