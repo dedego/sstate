@@ -22,3 +22,4 @@
 | 1.2.4   | Moved to GitHub                                                                  |
 | 1.2.5   | Corrected repo in package.json, corrected description                            |
 | 1.2.6   | Fixed an issue with the pre-install script, causing package install failures     |
+| 1.3.0   | Modified `setState` to also accept a method which gives you access to the previous value. Cleaned up the API     |

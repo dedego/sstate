@@ -4,32 +4,39 @@ You can create a new store with a initial state, by passing a state object into 
 The second argument is an object with action definitions like the example below.
 
 ```javascript
-const initialState = {
+const CarStore = new Sstate({
   brands: ["volvo", "ford"],
   sales: {
     volvo: 231,
     ford: 92
   }
-};
-const actions = {
+}, {
   getLatestBrands: (setState, state) => {
     axios.get("/api/brands/latest").then(({ data }) => {
-      setState("brands", state.brands.concat(data));
+      setState("brands", previous => {
+        data.forEach(brand => {
+          if (!state.brands.includes(brand)) {
+            setState(`sales.${brand}`, 0);
+          }
+        })
+        return [...state,...data];
+      });
     });
   }
-};
-const CarStore = new Sstate(initialState, actions);
+});
 ```
 
 ### setState
 
 From the moment we have a store instance, we can start to manipulate the state by using `setState` on the store instance.
+setState has two ways of modifying the state. You can pass it a primitive value or you could pass it a method, where the first and only argument is the previous value of the state that you'd like to modify.
 
 ```javascript
 CarStore.setState("brands", ["audi"].concat(CarStore.getState("brands")));
+CarStore.setState("brands", previous => ["audi"].concat(previous));
 ```
 
-The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unmodified and subscribers will not be notified of any changes.
+The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unmodified and subscribers will not be notified of any changes. setState does not do any validation on types. If you decide to change the type of value, setState will always allow it. If you want to make sure you have more control over the way the state is changed, please define a action and build your logic there.
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
@@ -37,6 +44,7 @@ After calling setState the state is updated. Without a subscription or requestin
 
 ```javascript
 setState(path, newValue);
+setState(path, previousValue => previousValue + 1);
 ```
 
 ### getState
@@ -61,8 +69,8 @@ getState(path);
 Subscription is a nice way to listen to specific changes on the state. By providing **a path** (same as with the `getState` method) and **a callback method**, which will be passed two values, the new value and the previous value.
 
 ```javascript
-const unsubscribeFordSales = CarStore.subscribe('sales.ford', (new, old) => {
-    FordSalesCard.enablePromotion = new < old;
+const unsubscribeFordSales = CarStore.subscribe('sales.ford', (next, previous) => {
+    FordSalesCard.enablePromotion = next < previous;
 });
 
 // When it is time to stop listening to the changes, just call:

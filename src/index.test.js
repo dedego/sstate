@@ -94,6 +94,10 @@ describe("Sstate scenarios", () => {
     // Making sure deepClone does not destroy date instances.
     CarStore.setState("mercedes.lastSale", new Date());
     expect(CarStore.getState("mercedes.lastSale")).toBeInstanceOf(Date);
+
+    expect(CarStore.getState("brands.ford.models")).toHaveLength(2);
+    CarStore.setState("brands.ford.models", previous => ["mustang"].concat(previous));
+    expect(CarStore.getState("brands.ford.models")).toHaveLength(3);
   });
 
   test("[exec]", () => {
@@ -182,7 +186,7 @@ describe("Sstate scenarios", () => {
       "fruit",
       ["bananas"].concat(FoodStore.getState("fruit"))
     );
-    FoodStore.setState("fruit", ["mangos"].concat(FoodStore.getState("fruit")));
+    FoodStore.setState("fruit", previous => ["mangos"].concat(previous));
 
     // Execute action
     FoodStore.exec("addFruit");
