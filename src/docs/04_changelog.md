@@ -24,3 +24,4 @@
 | 1.2.6   | Fixed an issue with the pre-install script, causing package install failures     |
 | 1.3.0   | Modified `setState` to also accept a method which gives you access to the previous value. Cleaned up the API     |
 | 1.3.1   | Removed deepClone call from set/unset. Updated docs.                             |
+| 1.3.1   | Added eslint. Fix small linting issue                                            |

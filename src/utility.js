@@ -13,7 +13,7 @@ const deepClone = obj => {
     return returnObj;
   }
   returnObj = {};
-  for (i in obj) if (obj.hasOwnProperty(i)) returnObj[i] = deepClone(obj[i]);
+  for (i in obj) if (Object.prototype.hasOwnProperty.call(obj, i)) returnObj[i] = deepClone(obj[i]);
   return returnObj;
 };
 const uuid = () =>
