@@ -43,10 +43,10 @@ class Sstate {
   getState(key) {
     return !key ? this.__state : get(this.__state, key);
   }
-  setState(key, next) {
+  setState(key, nextValue) {
     if(typeof key !== "string") throw Errors.invalid_key(key);
     const previous = this.getState(key);
-    if(typeof next === "function") next = next(previous);
+    const next = typeof nextValue === "function" ? nextValue(previous) : nextValue;
     if (JSON.stringify(next) !== JSON.stringify(previous)) {
       this.__state = set(this.__sstate__state, key, next);
       const subscriptionsForKey = get(this.__subscribers, key);

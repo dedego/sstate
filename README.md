@@ -94,8 +94,8 @@ FoodStore.exec("updateStock", { country: "NL" });
 ---
 ## API
 
-You can create a new store with a initial state, by passing a state object into the constructor.
-The second argument is an object with action definitions like the example below.
+You can create a new store with a initial state, by passing a state object into the constructor as the first argument.
+If you like to setup predefined actions, you can pass this as the second arguments when creating your store.
 
 ```javascript
 const CarStore = new Sstate({
@@ -107,14 +107,8 @@ const CarStore = new Sstate({
 }, {
   getLatestBrands: (setState, state) => {
     axios.get("/api/brands/latest").then(({ data }) => {
-      setState("brands", previous => {
-        data.forEach(brand => {
-          if (!state.brands.includes(brand)) {
-            setState(`sales.${brand}`, 0);
-          }
-        })
-        return [...state,...data];
-      });
+      setState("brands", previous => [...previous, ...data]);
+      data.forEach(brand => setState(`sales.${brand}`, previous => previous ? previous : 0));
     });
   }
 });
@@ -122,15 +116,15 @@ const CarStore = new Sstate({
 
 ### setState
 
-From the moment we have a store instance, we can start to manipulate the state by using `setState` on the store instance.
-setState has two ways of modifying the state. You can pass it a primitive value or you could pass it a method, where the first and only argument is the previous value of the state that you'd like to modify.
+Once we have a store instance, we can start to manipulate the state by using `setState` on the store.
+setState has two ways of changing the state. You can pass it a primitive value or you could pass it a method; where the first and only argument is the previous value of the state that you'd like to change.
 
 ```javascript
 CarStore.setState("brands", ["audi"].concat(CarStore.getState("brands")));
 CarStore.setState("brands", previous => ["audi"].concat(previous));
 ```
 
-The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unmodified and subscribers will not be notified of any changes. setState does not do any validation on types. If you decide to change the type of value, setState will always allow it. If you want to make sure you have more control over the way the state is changed, please define a action and build your logic there.
+The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unchanged and subscribers will not be notified of any changes. setState does not do any validation on types. If you decide to change the type of value, setState will always allow it. If you want to make sure you have more control over the way the state is changed, please define a action and build your logic there.
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
@@ -160,7 +154,7 @@ getState(path);
 
 ### subscribe
 
-Subscription is a nice way to listen to specific changes on the state. By providing **a path** (same as with the `getState` method) and **a callback method**, which will be passed two values, the new value and the previous value.
+Subscription is a nice way to listen to specific state changes. By providing **a path** (same as with the `getState` method) and **a callback method**, which will be passed two values, the next value and the previous value.
 
 ```javascript
 const unsubscribeFordSales = CarStore.subscribe('sales.ford', (next, previous) => {
@@ -177,13 +171,18 @@ unsubscribeFordSales();
 subscribe(path, callback);
 ```
 
-### exec
+### exec 
 
-As of version 1.1.0 there is the concept of actions that can be executed on the store which will result in a modified state.
-Actions can be provided as the second argument when initializing the store. At the moment of execution, the first argument gives
-you access to the `setState` method, the second argument gives you the complete state and the third argument allows for passing allong parameters.
+*Introduced in version 1.1.0*
 
-When calling the `exec` method, the first argument refers to the predefined action, the second argument can be used to pass along parameters.
+Actions can be provided as the second argument when initializing the store. 
+
+A action receives three arguments:
+- the `setState` method
+- the complete state
+- arguments (for when you call the `exec` method)
+
+If you want to execute a action, use the `exec` method with the name of the action and optionally parameters as the second argument.
 
 You can chain multiple actions in a single line (see example).
 
@@ -213,7 +212,9 @@ const ToyStore = new Sstate(
 );
 
 // Now the "update" action is available through the `exec` method
-ToyStore.exec("update", { type: "electric" }).exec("update", { type: "wood" });
+ToyStore
+  .exec("update", { type: "electric" })
+  .exec("update", { type: "wood" });
 // The update method prevents the axios call from being made,
 // because the type is not allowed.
 ToyStore.exec("update", { type: "GARBAGE" });
@@ -251,3 +252,4 @@ exec(actionName, args);
 | 1.2.5   | Corrected repo in package.json, corrected description                            |
 | 1.2.6   | Fixed an issue with the pre-install script, causing package install failures     |
 | 1.3.0   | Modified `setState` to also accept a method which gives you access to the previous value. Cleaned up the API     |
+| 1.3.1   | Removed deepClone call from set/unset. Updated docs.                             |

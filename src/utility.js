@@ -42,7 +42,7 @@ const setUnset = (root = {}, key, value) => {
   } else {
     delete obj[keyParts[length - 1]];
   }
-  return deepClone(root);
+  return root;
 };
 const set = (root, key, value) => setUnset(root, key, value);
 const unset = (root, key) => setUnset(root, key);
