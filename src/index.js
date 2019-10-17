@@ -43,8 +43,9 @@ class Sstate {
   getState(key) {
     return !key ? this.__state : get(this.__state, key);
   }
-  setState(key, nextValue) {
+  setState(key, nextValue, alertParent = false) {
     if(typeof key !== "string") throw Errors.invalid_key(key);
+    const previousState = this.getState();
     const previous = this.getState(key);
     const next = typeof nextValue === "function" ? nextValue(previous) : nextValue;
     if (JSON.stringify(next) !== JSON.stringify(previous)) {
@@ -54,6 +55,19 @@ class Sstate {
       Object.keys(subscriptionsForKey).forEach(unique => {
         subscriptionsForKey[unique](next, previous);
       });
+
+      if (alertParent) {
+        const keyParts = key.split(".");
+        while (keyParts.length) {
+          keyParts.pop();
+          const parentKey = keyParts.join(".");
+          const subscriptions = get(this.__subscribers, parentKey);
+          if (!subscriptions) return;
+          Object.keys(subscriptions).forEach(unique => {
+            subscriptions[unique](get(this.getState(parentKey), get(previousState, parentKey));
+          });
+        }
+      }
     }
   }
   subscribe(key, cb) {
