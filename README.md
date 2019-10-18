@@ -1,9 +1,11 @@
 ![alt text](sstate.png "Simplified State Store")
 
 Sstate store is a simplified take on state management. Setting up your store is easy and its API easy to use. State can be modified directly with `setState` or predefined actions which can be executed with `exec`. To have control over how the state is modified its recommended to make use of actions to modify your state.
-You can also `subscribe` to state changes of parts of your state, which is a efficient way to act on change.
+You can also `subscribe` to state changes of parts of your state, which is a efficient way to act on change. If a parent subscription should be notified is up to you.
 
 Sstate does not dictate how to use state management within your application; you can work with with a single store or have more smaller stores. Stores can even `subscribe` to other changes of other stores. Its up to you.
+
+> NEW! as of 1.4.0 you can have [setState](#setstate) trigger parent subscriptions.
 
 1. [Getting started](#getting-started)
    1. [Example](#example)
@@ -120,19 +122,27 @@ Once we have a store instance, we can start to manipulate the state by using `se
 setState has two ways of changing the state. You can pass it a primitive value or you could pass it a method; where the first and only argument is the previous value of the state that you'd like to change.
 
 ```javascript
+const alertParentSubscriptions = true;
+
 CarStore.setState("brands", ["audi"].concat(CarStore.getState("brands")));
-CarStore.setState("brands", previous => ["audi"].concat(previous));
+CarStore.setState("brands", previous => ["audi"].concat(previous), alertParentSubscriptions);
 ```
 
 The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unchanged and subscribers will not be notified of any changes. setState does not do any validation on types. If you decide to change the type of value, setState will always allow it. If you want to make sure you have more control over the way the state is changed, please define a action and build your logic there.
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
+> You can now also make sure parent subscribers are a called upon a change, by passing it as the third argument of the **setState** method
+
 **Syntax:**
 
 ```javascript
+const alertParentSubscriptions = true;
+
 setState(path, newValue);
 setState(path, previousValue => previousValue + 1);
+// Now parents subscriptions for the given child path will also be triggered on update
+setState(path, newValue, alertParentSubscriptions);
 ```
 
 ### getState
@@ -205,7 +215,8 @@ const ToyStore = new Sstate(
     update: (setState, state, { type }) => {
       if (!["wood", "electric"].includes(type)) return;
       axios.get(`/api/getStock/${type}`).then(({ data }) => {
-        setState(type, { ...state[type], ...data });
+        const alertParentSubscriptions = false; // which is the default
+        setState(type, { ...state[type], ...data }, alertParentSubscriptions);
       });
     }
   }
@@ -254,3 +265,4 @@ exec(actionName, args);
 | 1.3.0   | Modified `setState` to also accept a method which gives you access to the previous value. Cleaned up the API     |
 | 1.3.1   | Removed deepClone call from set/unset. Updated docs.                             |
 | 1.3.2   | Added eslint. Fix small linting issue                                            |
+| 1.4.0   | Added the posibility to alert parent subscription of child changes               |

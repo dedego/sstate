@@ -45,7 +45,7 @@ describe("Sstate scenarios", () => {
     );
 
     // Adding sales for Mercedes
-    CarStore.setState("brands.mercedes.sales", 8);
+    CarStore.setState("brands.mercedes.sales", 8, true);
     CarStore.setState("brands.mercedes.sales", 11);
     CarStore.setState("brands.mercedes.sales", 12);
     CarStore.setState("brands.mercedes.sales", 13);
@@ -206,5 +206,24 @@ describe("Sstate scenarios", () => {
     expect(ACTIONMock).toHaveBeenCalledTimes(2);
 
     expect(FoodStore.getState("potato")).toBe(4);
+  });
+
+  test("Multi level subscriptions", () => {
+    const thirdLevelMock = jest.fn();
+
+    CarStore.subscribe("brands.mercedes.sales", thirdLevelMock);
+    CarStore.subscribe("brands.mercedes", (newVal, oldVal) => {
+      expect(newVal).toEqual({"models": ["a-class", "b-class", "c-class"], "sales": 123});
+      expect(oldVal).toEqual({"models": ["a-class", "b-class", "c-class"], "sales": 7});
+    });
+    CarStore.subscribe("brands", (newVal, oldVal) => {
+      expect(newVal).toEqual({ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 123 }});
+      expect(oldVal).toEqual({ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 7 }});
+    });
+
+    CarStore.setState("brands.mercedes.sales", 123, true);
+    
+    expect(thirdLevelMock).toHaveBeenCalledTimes(1)
+    expect(thirdLevelMock).toHaveBeenCalledWith(123, 7);
   });
 });

@@ -49,29 +49,34 @@ class Sstate {
     const previous = this.getState(key);
     const next = typeof nextValue === "function" ? nextValue(previous) : nextValue;
     if (JSON.stringify(next) !== JSON.stringify(previous)) {
+      const subscriptionKey = key.replace(/[.]/g, '_');
       this.__state = set(this.__sstate__state, key, next);
-      const subscriptionsForKey = get(this.__subscribers, key);
-      if (!subscriptionsForKey) return;
-      Object.keys(subscriptionsForKey).forEach(unique => {
-        subscriptionsForKey[unique](next, previous);
-      });
+      const handleSubscriptions = (key, exact = false) => {
+        const subscriptionsForKey = get(this.__subscribers, key);
+        const stateKey = key.replace(/[_]/g, '.')
+        if (!subscriptionsForKey) return;
+        Object.keys(subscriptionsForKey).forEach(unique => {
+          subscriptionsForKey[unique](
+            exact ? next : get(this.__state, stateKey), 
+            exact ? previous : get(previousState, stateKey)
+          );
+        });  
+      };
+
+      handleSubscriptions(subscriptionKey, true);
 
       if (alertParent) {
-        const keyParts = key.split(".");
-        while (keyParts.length) {
-          keyParts.pop();
-          const parentKey = keyParts.join(".");
-          const subscriptions = get(this.__subscribers, parentKey);
-          if (!subscriptions) return;
-          Object.keys(subscriptions).forEach(unique => {
-            subscriptions[unique](get(this.getState(parentKey), get(previousState, parentKey));
-          });
+        let keyParts = key.split(".");
+        while (keyParts.length > 0) {
+          keyParts = keyParts.slice(0, -1);
+          const parentKey = keyParts.join("_");
+          handleSubscriptions(parentKey);
         }
       }
     }
   }
   subscribe(key, cb) {
-    const id = `${key}.${uuid()}`;
+    const id = `${key.replace(/[.]/g, '_')}.${uuid()}`;
     this.__subscribers = set(this.__subscribers, id, cb);
     return () => (this.__subscribers = unset(this.__subscribers, id));
   }

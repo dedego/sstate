@@ -1,9 +1,11 @@
 ![alt text](sstate.png "Simplified State Store")
 
 Sstate store is a simplified take on state management. Setting up your store is easy and its API easy to use. State can be modified directly with `setState` or predefined actions which can be executed with `exec`. To have control over how the state is modified its recommended to make use of actions to modify your state.
-You can also `subscribe` to state changes of parts of your state, which is a efficient way to act on change.
+You can also `subscribe` to state changes of parts of your state, which is a efficient way to act on change. If a parent subscription should be notified is up to you.
 
 Sstate does not dictate how to use state management within your application; you can work with with a single store or have more smaller stores. Stores can even `subscribe` to other changes of other stores. Its up to you.
+
+> NEW! as of 1.4.0 you can have [setState](#setstate) trigger parent subscriptions.
 
 1. [Getting started](#getting-started)
    1. [Example](#example)
