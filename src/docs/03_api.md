@@ -26,19 +26,27 @@ Once we have a store instance, we can start to manipulate the state by using `se
 setState has two ways of changing the state. You can pass it a primitive value or you could pass it a method; where the first and only argument is the previous value of the state that you'd like to change.
 
 ```javascript
+const alertParentSubscriptions = true;
+
 CarStore.setState("brands", ["audi"].concat(CarStore.getState("brands")));
-CarStore.setState("brands", previous => ["audi"].concat(previous));
+CarStore.setState("brands", previous => ["audi"].concat(previous), alertParentSubscriptions);
 ```
 
 The setState method will do a simple diff between the old value and the newly given value and if they are equal, the state is left unchanged and subscribers will not be notified of any changes. setState does not do any validation on types. If you decide to change the type of value, setState will always allow it. If you want to make sure you have more control over the way the state is changed, please define a action and build your logic there.
 
 After calling setState the state is updated. Without a subscription or requesting the latest state, this will not automatically be reflected somewhere.
 
+> You can now also make sure parent subscribers are a called upon a change, by passing it as the third argument of the **setState** method
+
 **Syntax:**
 
 ```javascript
+const alertParentSubscriptions = true;
+
 setState(path, newValue);
 setState(path, previousValue => previousValue + 1);
+// Now parents subscriptions for the given child path will also be triggered on update
+setState(path, newValue, alertParentSubscriptions);
 ```
 
 ### getState
@@ -111,7 +119,8 @@ const ToyStore = new Sstate(
     update: (setState, state, { type }) => {
       if (!["wood", "electric"].includes(type)) return;
       axios.get(`/api/getStock/${type}`).then(({ data }) => {
-        setState(type, { ...state[type], ...data });
+        const alertParentSubscriptions = false; // which is the default
+        setState(type, { ...state[type], ...data }, alertParentSubscriptions);
       });
     }
   }
