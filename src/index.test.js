@@ -173,6 +173,7 @@ describe("Sstate scenarios", () => {
     const FSMock = jest.fn();
     const CSMock = jest.fn();
     const ACTIONMock = jest.fn();
+    const ISMock = jest.fn();
 
     const usFS = FoodStore.subscribe("fruit", FSMock);
     const usAFS = FoodStore.subscribe("potato", ACTIONMock);
@@ -181,49 +182,61 @@ describe("Sstate scenarios", () => {
     CarStore.setState("brands.mercedes.sales", 8);
     CarStore.setState("brands.mercedes.sales", 11);
     CarStore.setState("brands.mercedes.sales", 17);
+ 
+    const InventoryStore = new Sstate({
+      food: 0,
+      cars: 0
+    });
 
+    InventoryStore.subscribe("food", ISMock);   
+    FoodStore.subscribe("fruit", (newVal, oldVal) => {
+      InventoryStore.setState("food", oldVal + newVal.length);
+    });
     FoodStore.setState(
       "fruit",
       ["bananas"].concat(FoodStore.getState("fruit"))
     );
+
+    expect(ISMock).toHaveBeenCalledTimes(1);
     FoodStore.setState("fruit", previous => ["mangos"].concat(previous));
-
-    // Execute action
-    FoodStore.exec("addFruit");
-
+    expect(ISMock).toHaveBeenCalledTimes(2);
+    FoodStore.exec("addFruit"); // Execute action (this action does not add fruit ;-)
+    expect(ISMock).toHaveBeenCalledTimes(2);
     expect(FSMock).toHaveBeenCalledTimes(2);
     expect(CSMock).toHaveBeenCalledTimes(3);
-
     FoodStore.setState("fruit", ["kiwis"].concat(FoodStore.getState("fruit")));
+    expect(ISMock).toHaveBeenCalledTimes(3);
     CarStore.setState("brands.mercedes.sales", 21);
     CarStore.setState("brands.mercedes.sales", 25);
-
     usFS();
     usCS();
-
     expect(FSMock).toHaveBeenCalledTimes(3);
     expect(CSMock).toHaveBeenCalledTimes(5);
     expect(ACTIONMock).toHaveBeenCalledTimes(2);
-
     expect(FoodStore.getState("potato")).toBe(4);
   });
 
   test("Multi level subscriptions", () => {
+    const firstLevelMock = jest.fn();
+    const secondLevelMock = jest.fn();
     const thirdLevelMock = jest.fn();
 
     CarStore.subscribe("brands.mercedes.sales", thirdLevelMock);
-    CarStore.subscribe("brands.mercedes", (newVal, oldVal) => {
-      expect(newVal).toEqual({"models": ["a-class", "b-class", "c-class"], "sales": 123});
-      expect(oldVal).toEqual({"models": ["a-class", "b-class", "c-class"], "sales": 7});
-    });
-    CarStore.subscribe("brands", (newVal, oldVal) => {
-      expect(newVal).toEqual({ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 123 }});
-      expect(oldVal).toEqual({ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 7 }});
-    });
-
+    CarStore.subscribe("brands.mercedes", secondLevelMock);
+    CarStore.subscribe("brands", firstLevelMock);
     CarStore.setState("brands.mercedes.sales", 123, true);
     
     expect(thirdLevelMock).toHaveBeenCalledTimes(1)
+    expect(secondLevelMock).toHaveBeenCalledTimes(1)
+    expect(firstLevelMock).toHaveBeenCalledTimes(1)
     expect(thirdLevelMock).toHaveBeenCalledWith(123, 7);
+    expect(secondLevelMock).toHaveBeenCalledWith(
+      {"models": ["a-class", "b-class", "c-class"], "sales": 123}, 
+      {"models": ["a-class", "b-class", "c-class"], "sales": 7}
+    );
+    expect(firstLevelMock).toHaveBeenCalledWith(
+      {ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 123 }},
+      {ford: { models: ["fiesta", "cmax"], sales: 3 }, mercedes: { models: ["a-class", "b-class", "c-class"], sales: 7 }}
+    );
   });
 });
