@@ -1,4 +1,5 @@
 import { deepClone, uuid, get, set, unset } from "./utility";
+import { createDecorators } from './decorators';
 
 const Errors = {
   invalid_key: key => `The key can only be a string, you passed a ${typeof key}`,
@@ -83,4 +84,4 @@ class Sstate {
 }
 
 export default Sstate;
-export { Sstate };
+export { Sstate, createDecorators };
