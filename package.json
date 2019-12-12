@@ -1,6 +1,6 @@
 {
   "name": "sstate",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Simplified State",
   "main": "dist/index.js",
   "module": "dist/index.m.js",

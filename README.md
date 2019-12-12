@@ -268,3 +268,4 @@ exec(actionName, args);
 | 1.4.0   | Added the posibility to alert parent subscription of child changes               |
 | 1.4.1   | Changed the published files. Still working on the ES decorators...               |
 | 1.4.2   | Added compression                                                                |
+| 1.4.3   | Removed sourcemaps                                                               |
