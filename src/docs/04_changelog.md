@@ -26,3 +26,4 @@
 | 1.3.1   | Removed deepClone call from set/unset. Updated docs.                             |
 | 1.3.2   | Added eslint. Fix small linting issue                                            |
 | 1.4.0   | Added the posibility to alert parent subscription of child changes               |
+| 1.4.1   | Changed the published files. Still working on the ES decorators...               |

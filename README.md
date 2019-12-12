@@ -1,4 +1,4 @@
-![alt text](sstate.png "Simplified State Store")
+# Simplified State
 
 Sstate store is a simplified take on state management. Setting up your store is easy and its API easy to use. State can be modified directly with `setState` or predefined actions which can be executed with `exec`. To have control over how the state is modified its recommended to make use of actions to modify your state.
 You can also `subscribe` to state changes of parts of your state, which is a efficient way to act on change. If a parent subscription should be notified is up to you.
@@ -266,3 +266,4 @@ exec(actionName, args);
 | 1.3.1   | Removed deepClone call from set/unset. Updated docs.                             |
 | 1.3.2   | Added eslint. Fix small linting issue                                            |
 | 1.4.0   | Added the posibility to alert parent subscription of child changes               |
+| 1.4.1   | Changed the published files. Still working on the ES decorators...               |

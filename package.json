@@ -1,9 +1,16 @@
 {
   "name": "sstate",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Simplified State",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/index.m.js",
+    "dist/index.m.js.map",
+    "README.md"
+  ],
   "scripts": {
     "test": "eslint . && jest",
     "test:watch": "jest --watchAll",
@@ -22,14 +29,14 @@
   },
   "homepage": "https://github.com/dedego/sstate#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
+    "@babel/core": "^7.7.5",
     "@babel/plugin-proposal-decorators": "^7.7.4",
-    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-env": "^7.7.6",
     "babel-jest": "^24.9.0",
-    "eslint": "^6.5.1",
+    "eslint": "^6.7.2",
     "jest": "^24.9.0",
     "lodash": ">=4.17.13",
-    "rollup": "^1.25.0"
+    "rollup": "^1.27.10"
   },
   "browserslist": [
     "defaults"
