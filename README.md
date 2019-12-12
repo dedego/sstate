@@ -269,3 +269,4 @@ exec(actionName, args);
 | 1.4.1   | Changed the published files. Still working on the ES decorators...               |
 | 1.4.2   | Added compression                                                                |
 | 1.4.3   | Removed sourcemaps                                                               |
+| 1.4.4   | Removed sourcemaps from files (package.json)                                     |
