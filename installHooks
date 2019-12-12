@@ -5,5 +5,5 @@ cd .git/hooks
 PRECOMMITFILE=pre-commit
 touch $PRECOMMITFILE
 > $PRECOMMITFILE
-echo "#!/bin/bash\n\n> ./README.md\ncat ./src/docs/*.md >> ./README.md\n\ngit add ./README.md" >> $PRECOMMITFILE
+echo "> ./README.md && cat ./src/docs/*.md >> ./README.md && git add ./README.md" >> $PRECOMMITFILE
 chmod +x $PRECOMMITFILE
