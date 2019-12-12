@@ -6,9 +6,7 @@
   "module": "dist/index.m.js",
   "files": [
     "dist/index.js",
-    "dist/index.js.map",
     "dist/index.m.js",
-    "dist/index.m.js.map",
     "README.md"
   ],
   "scripts": {
