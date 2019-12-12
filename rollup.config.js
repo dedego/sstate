@@ -1,3 +1,4 @@
+import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
 module.exports = {
@@ -17,5 +18,6 @@ module.exports = {
       exports: "named",
       name: "Sstate"
     }
-  ]
+  ],
+  plugins: [terser()]
 };
